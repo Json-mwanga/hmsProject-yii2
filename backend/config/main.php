@@ -12,9 +12,17 @@ return [
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
     'modules' => [],
+    'layout' => '@vendor/hail812/yii2-adminlte3/src/views/layouts/main', 
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-backend',
+        ],
+         'view' => [
+        'theme' => [
+            'pathMap' => [
+                '@app/views' => '@vendor/hail812/yii2-adminlte3/src/views'
+                ],
+            ],
         ],
         'user' => [
             'identityClass' => 'common\models\User',
