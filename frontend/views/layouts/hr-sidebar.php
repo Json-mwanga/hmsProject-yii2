@@ -1,7 +1,17 @@
 <!-- views/layouts/hr-sidebar.php -->
+<?php
+use yii\helpers\Html;
+
+function badge($count) {
+    return $count > 0 ? "<span class='badge bg-danger rounded-pill ms-2'>$count</span>" : '';
+}
+
+$pendingApprovals = $this->params['pendingApprovals'] ?? 0;
+?>
+
 <div class="px-3 py-4">
     <h5 class="text-white mb-4">
-        <i class="fas fa-user-tie"></i> 👥 <strong>HR DEPARTMENT</strong>
+        <i class="fas fa-user-tie"></i>  <strong>HR DEPARTMENT</strong>
     </h5>
 
     <ul class="nav flex-column">

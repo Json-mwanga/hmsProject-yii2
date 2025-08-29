@@ -1,7 +1,17 @@
 <!-- views/layouts/finance-sidebar.php -->
+ <?php
+use yii\helpers\Html;
+
+function badge($count) {
+    return $count > 0 ? "<span class='badge bg-danger rounded-pill ms-2'>$count</span>" : '';
+}
+
+$pendingPayments = $this->params['pendingPayments'] ?? 0;
+?>
+
 <div class="px-3 py-4">
     <h5 class="text-white mb-4">
-        <i class="fas fa-coins"></i> 💰 <strong>FINANCE</strong>
+        <i ></i> 💰 <strong>FINANCE</strong>
     </h5>
 
     <ul class="nav flex-column">
@@ -27,7 +37,7 @@
         </li>
 
         <li class="nav-item mb-1">
-            <?= Html::a('<i class="fas fa-credit-card"></i> WeChat/Alipay', 
+            <?= Html::a('<i class="fas fa-credit-card"></i> Digital Payments', 
                 ['finance/digital'], ['class' => 'nav-link text-light']) ?>
         </li>
 

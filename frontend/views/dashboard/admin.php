@@ -1,5 +1,38 @@
 <!-- views/dashboard/admin.php -->
+<style>
+    .badge.bg-primary { background-color: #0d6efd !important; }
+    .badge.bg-info { background-color: #0dcaf0 !important; }
+    .badge.bg-warning { background-color: #ffc107 !important; }
+    .badge.bg-danger { background-color: #dc3545 !important; }
+    .badge.bg-secondary { background-color: #6c757d !important; }
+    .badge.bg-dark { background-color: #212529 !important; }
+
+    .badge {
+        font-size: 0.8em;
+        padding: 0.5em 0.8em;
+        font-weight: 600;
+    }
+</style>
+
 <?php
+// Helper function to return Bootstrap color class
+function statusColor($status) {
+    switch ($status) {
+        case 'Checked-In':
+        case 'In-Consultation':
+            return 'primary';
+        case 'Lab':
+            return 'info';
+        case 'Pharmacy':
+            return 'warning';
+        case 'Discharged':
+            return 'secondary';
+        case 'Emergency':
+            return 'danger';
+        default:
+            return 'dark';
+    }
+}
 $this->title = 'Admin Command Center';
 $this->params['sidebar'] = 'admin-sidebar';
 ?>

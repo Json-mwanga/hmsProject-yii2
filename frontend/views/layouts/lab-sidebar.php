@@ -1,7 +1,16 @@
 <!-- views/layouts/lab-sidebar.php -->
+ <?php
+use yii\helpers\Html;
+
+function badge($count) {
+    return $count > 0 ? "<span class='badge bg-danger rounded-pill ms-2'>$count</span>" : '';
+}
+
+$criticalLabs = $this->params['criticalLabs'] ?? 0;
+?>
 <div class="px-3 py-4">
     <h5 class="text-white mb-4">
-        <i class="fas fa-microscope"></i> 🧫 <strong>LAB CENTER</strong>
+        <i class="fas fa-microscope"></i> <strong>LAB CENTER</strong>
     </h5>
 
     <ul class="nav flex-column">

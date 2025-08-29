@@ -2,9 +2,22 @@
 <?php
 $this->title = 'Reception Hub';
 $this->params['sidebar'] = 'reception-sidebar';
+
+// Helper function: statusClass
+function statusClass($status) {
+    return match($status) {
+        'Checked-In' => 'primary',
+        'In-Consultation' => 'warning',
+        'Lab' => 'info',
+        'Pharmacy' => 'success',
+        'Discharged' => 'secondary',
+        'Waiting' => 'dark',
+        default => 'dark'
+    };
+}
 ?>
 
-<h3><i class="fas fa-deskpro"></i> Reception Desk — <?= date('D, M j, Y') ?></h3>
+<h3><i ></i> Reception Desk — <?= date('D, M j, Y') ?></h3>
 
 <div class="row g-4 mb-4">
     <!-- New Registrations Today -->
@@ -55,7 +68,7 @@ $this->params['sidebar'] = 'reception-sidebar';
 <!-- Live Queue Table -->
 <div class="card">
     <div class="card-header d-flex justify-content-between">
-        <strong>👥 Live Patient Queue</strong>
+        <strong>📋 Live Patient Queue</strong>
         <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#registerModal">
             <i class="fas fa-plus"></i> Register New
         </button>
@@ -74,18 +87,18 @@ $this->params['sidebar'] = 'reception-sidebar';
             </thead>
             <tbody>
                 <?php foreach ($queue as $q): ?>
-                <tr class="<?= $q['priority'] === 'urgent' ? 'table-danger fw-bold' : '' ?>">
-                    <td><strong><?= $q['hosp_id'] ?></strong></td>
-                    <td><?= $q['name'] ?></td>
+                <tr class="<?= $q ->priority === 'urgent' ? 'table-danger fw-bold' : '' ?>">
+                    <td><strong><?= $q->hosp_id ?></strong></td>
+                    <td><?= $q->name ?></td>
                     <td>
-                        <span class="badge bg-<?= $q['payment_type'] === 'Insurance' ? 'info' : 'secondary' ?>">
-                            <?= $q['payment_type'] ?>
+                        <span class="badge bg-<?= $q->payment_type === 'Insurance' ? 'info' : 'secondary' ?>">
+                            <?= $q->payment_type ?>
                         </span>
                     </td>
-                    <td><?= date('H:i', $q['check_in']) ?></td>
-                    <td><span class="badge bg-<?= statusClass($q['status']) ?>"><?= $q['status'] ?></span></td>
+                    <td><?= date('H:i', $q->check_in) ?></td>
+                    <td><span class="badge bg-<?= statusClass($q->status) ?>"><?= $q->status ?></span></td>
                     <td>
-                        <button class="btn btn-sm btn-outline-success" onclick="assignDoctor(<?= $q['id'] ?>)">
+                        <button class="btn btn-sm btn-outline-success" onclick="assignDoctor(<?= $q -> id ?>)">
                             Assign
                         </button>
                     </td>

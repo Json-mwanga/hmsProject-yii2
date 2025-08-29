@@ -28,7 +28,7 @@ $this->params['sidebar'] = 'finance-sidebar';
     <div class="col-md-3">
         <div class="card bg-info text-white text-center">
             <div class="card-body">
-                <h5><i class="fas fa-credit-card"></i> WeChat/Alipay</h5>
+                <h5><i class="fas fa-credit-card"></i>  Digital Payments </h5>
                 <p class="display-6"><?= $digitalPayments ?></p>
                 <small><?= round($digitalPct, 1) ?>% of total</small>
             </div>

@@ -9,8 +9,13 @@ $params = array_merge(
 return [
     'id' => 'app-frontend',
     'basePath' => dirname(__DIR__),
+    'defaultRoute' => 'site/index',
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
+
+    // 👇 Add this line:
+    // 'homeUrl' => ['/site/login'],  // or '/site/select-dashboard'
+    
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
@@ -36,14 +41,19 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
+        
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                '' => 'site/index',
+                'login' => 'site/login',
+                'signup' => 'site/signup',
+                'logout' => 'site/logout',
             ],
+            
         ],
-        */
+        
     ],
     'params' => $params,
 ];

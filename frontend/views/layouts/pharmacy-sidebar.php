@@ -1,7 +1,20 @@
 <!-- views/layouts/pharmacy-sidebar.php -->
+ <?php
+// ✅ add this part at the top
+use yii\helpers\Html;
+use yii\helpers\Url;
+
+// Helper: badge function
+function badge($count) {
+    return $count > 0 ? "<span class='badge bg-danger rounded-pill ms-2'>$count</span>" : '';
+}
+
+// Get data from params
+$lowStockAlerts = $this->params['lowStockAlerts'] ?? 0;
+?>
 <div class="px-3 py-4">
     <h5 class="text-white mb-4">
-        <i class="fas fa-pills"></i> 💊 <strong>PHARMACY</strong>
+        <i></i> 💊 <strong>PHARMACY</strong>
     </h5>
 
     <ul class="nav flex-column">

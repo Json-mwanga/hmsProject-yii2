@@ -1,7 +1,21 @@
 <!-- views/layouts/doctor-sidebar.php -->
+<?php
+use yii\helpers\Html;
+use yii\helpers\Url;
+
+// Helper: badge function
+function badge($count) {
+    return $count > 0 ? "<span class='badge bg-danger rounded-pill ms-2'>$count</span>" : '';
+}
+
+// Get data from params (set in controller)
+$criticalLabs = $this->params['criticalLabs'] ?? 0;
+$pendingPrescriptions = $this->params['pendingPrescriptions'] ?? 0;
+?>
+
 <div class="px-3 py-4">
     <h5 class="text-white mb-4">
-        <i class="fas fa-user-md"></i> 👨‍⚕️ <strong>DOCTOR HUB</strong>
+        <i ></i> 👨‍⚕️ <strong>DOCTOR HUB</strong>
     </h5>
 
     <ul class="nav flex-column">

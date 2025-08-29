@@ -40,13 +40,14 @@ $this->params['sidebar'] = 'nurse-sidebar';
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-header">⚠️ Critical Patients</div>
-                            <div class="list-group">
-                                <?php foreach ($criticalPatients as $p): ?>
-                                <a href="/nurse/vitals?patient=<?= $p['id'] ?>" class="list-group-item list-group-item-danger">
-                                    <?= $p['name'] ?> | Temp: <?= $p['temp'] ?>°C | BP: <?= $p['bp'] ?>
-                                </a>
-                                <?php endforeach; ?>
-                            </div>
+                            <!-- views/dashboard/nurse.php -->
+<div class="list-group">
+    <?php foreach ($criticalPatients as $p): ?>
+        <a href="/nurse/vitals?patient=<?= $p->id ?>" class="list-group-item list-group-item-danger">
+            <?= $p->name ?> | Temp: <?= $p->temp ?>°C | BP: <?= $p->bp ?>
+        </a>
+    <?php endforeach; ?>
+</div>
                         </div>
                     </div>
                 </div>

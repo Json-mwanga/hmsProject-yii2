@@ -21,7 +21,7 @@
     <div class="col-md-3">
         <div class="card bg-success text-white text-center">
             <div class="card-body">
-                <h5>Completed</h5>
+                <h5>Finalized</h5>
                 <p class="display-6"><?= $completed ?></p>
             </div>
         </div>
@@ -30,7 +30,7 @@
         <div class="card bg-secondary text-white text-center">
             <div class="card-body">
                 <h5>Today's Total</h5>
-                <p class="display-6"><?= $total ?></p>
+                <p class="display-8"><?= $total ?></p>
             </div>
         </div>
     </div>

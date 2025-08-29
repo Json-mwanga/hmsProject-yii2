@@ -1,7 +1,22 @@
 <!-- views/layouts/nurse-sidebar.php -->
+<?php
+// Add these at the top
+use yii\helpers\Html;
+use yii\helpers\Url;
+
+// Helper: badge function
+function badge($count) {
+    return $count > 0 ? "<span class='badge bg-danger rounded-pill ms-2'>$count</span>" : '';
+}
+
+// Get data from params
+$criticalAlerts = $this->params['criticalAlerts'] ?? 0;
+$pendingTasks = $this->params['pendingTasks'] ?? 0;
+?>
+
 <div class="px-3 py-4">
     <h5 class="text-white mb-4">
-        <i class="fas fa-notes-medical"></i> 👩‍⚕️ <strong>NURSE STATION</strong>
+        <i class="fas fa-notes-medical"></i> <strong>NURSE STATION</strong>
     </h5>
 
     <ul class="nav flex-column">

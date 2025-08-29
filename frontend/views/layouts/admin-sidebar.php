@@ -1,7 +1,19 @@
 <!-- views/layouts/admin-sidebar.php -->
+ <?php
+// Add this at the top of the file
+use yii\helpers\Html;
+use yii\helpers\Url;
+
+// Helper function: badge
+function badge($count) {
+    return $count > 0 
+        ? "<span class='badge bg-danger rounded-pill ms-2'>$count</span>" 
+        : '';
+}
+?>
 <div class="px-3 py-4">
     <h5 class="text-white mb-4">
-        <i class="fas fa-shield-alt"></i> 🛡️ <strong>ADMIN PANEL</strong>
+        <i class="fas fa-shield-alt"></i> <strong>ADMIN PANEL</strong>
     </h5>
 
     <ul class="nav flex-column">
