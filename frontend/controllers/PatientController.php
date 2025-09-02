@@ -86,6 +86,16 @@ public function actionDelete($id)
 {
     $model = $this->findModel($id);
     $name = $model->first_name . ' ' . $model->last_name;
+
+    // 🔍 Check if patient has appointments
+    $hasAppointments = \frontend\models\Appointment::find()
+        ->where(['patient_id' => $id])
+        ->exists();
+
+    if ($hasAppointments) {
+        Yii::$app->session->setFlash('error', "❌ Cannot delete '$name' — they have existing appointments.");
+        return $this->redirect(['index']);
+    }
     
     $model->delete();
 

@@ -58,3 +58,24 @@ frontend
 vendor/                  contains dependent 3rd-party packages
 environments/            contains environment-based overrides
 ```
+
+
+
+## HMS Project — Database Setup
+
+1. Clone the repo:
+   ```bash
+   git clone https://github.com/princelema/hmsProject-yii2.git
+
+2. Create the database in MySQL:
+CREATE DATABASE hms_db;
+
+3. Import the database dump:
+mysql -u root -p hms_db < db/hms_db.sql
+#### Or use phpMyAdmin → Import tab → select db/hms_db.sql.
+
+4. Configure your DB connection:
+=> Open common/config/main-local.php
+=> Set your own MySQL username and password.
+
+5. Done ✅. Run the Yii2 project.

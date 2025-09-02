@@ -84,6 +84,12 @@ public function beforeSave($insert)
         }
     }
 
+    if ($insert) {
+        if (empty($this->created_at)) {
+            $this->created_at = date('Y-m-d H:i:s');  // MySQL format
+        }
+    }
+
     // Calculate age from date_of_birth if available
     if ($this->date_of_birth) {
         $dob = new \DateTime($this->date_of_birth);

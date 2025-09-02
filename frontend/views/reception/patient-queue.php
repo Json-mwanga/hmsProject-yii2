@@ -27,6 +27,8 @@ use kartik\select2\Select2;
             <th>Type</th>
             <th>Check-In</th>
             <th>Assign</th>
+            <!-- 🔽 New: Delete Column -->
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -60,6 +62,16 @@ use kartik\select2\Select2;
                         <?= Html::encode($q->doctor ? $q->doctor->fullName : '-') ?>
                         <a href="<?= Url::to(['reception/edit-assign', 'id' => $q->id]) ?>" class="btn btn-warning btn-sm ms-2">Edit</a>
                     <?php endif; ?>
+                </td>
+                <!-- 🔽 Delete Button -->
+                <td>
+                    <form method="post" 
+                          action="<?= Url::to(['reception/remove-from-queue', 'id' => $q->id]) ?>" 
+                          style="display: inline;" 
+                          onsubmit="return confirm('Are you sure you want to remove this patient from the queue?');">
+                        <?= Html::hiddenInput(Yii::$app->request->csrfParam, Yii::$app->request->csrfToken) ?>
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
                 </td>
             </tr>
         <?php endforeach; ?>

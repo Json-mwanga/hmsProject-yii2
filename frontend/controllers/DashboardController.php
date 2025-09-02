@@ -7,6 +7,7 @@ use yii\web\Controller;
 use yii\web\IdentityInterface;
 use yii\web\Identity;
 use frontend\models\Patient;
+use frontend\models\Doctor;
 use frontend\models\Staff;
 use frontend\models\Payment;
 use frontend\models\LabReport;
@@ -149,8 +150,7 @@ public function actionDoctor()
     }
 
     // Mock data
-    // frontend/controllers/DashboardController.php
-$awaitingPatients = [
+    $awaitingPatients = [
     (object)[
         'id' => 1,
         'name' => 'Li Wei',
@@ -309,7 +309,7 @@ public function actionHr()
     return $this->render('lab', compact('pending', 'urgent', 'completed', 'total', 'pendingOrders'));
 }
 
-    // Nurse Dashboard
+// Nurse Dashboard
 public function actionNurse()
 {
     // 🔓 DEVELOPMENT MODE: Auto-login as nurse
@@ -330,13 +330,8 @@ public function actionNurse()
                 $this->role = $user->role;
             }
 
-            public function getUsername() {
-                return $this->username;
-            }
-
-            public function getRole() {
-                return $this->role;
-            }
+            public function getUsername() { return $this->username; }
+            public function getRole() { return $this->role; }
 
             public static function findIdentity($id) { return null; }
             public static function findIdentityByAccessToken($token, $type = null) { return null; }
@@ -365,7 +360,7 @@ public function actionNurse()
         $nurse->ward = 'Ward 3A';
     }
 
-    // ✅ Weka ward kama variable
+    // ✅ Nurse ward
     $ward = $nurse->ward;
 
     // Mock critical patients
@@ -375,8 +370,8 @@ public function actionNurse()
             'name' => 'Li Wei',
             'age' => 68,
             'gender' => 'Male',
-            'temp' => 39.2,    // ✅ Ongeza hii
-            'bp' => '90/60',   // ✅
+            'temp' => 39.2,
+            'bp' => '90/60',
             'vitals' => 'BP: 90/60, HR: 120, SpO2: 88%',
             'condition' => 'Post-op, low oxygen',
             'time_in' => time() - 300,
@@ -386,24 +381,24 @@ public function actionNurse()
             'name' => 'Zhang Mei',
             'age' => 75,
             'gender' => 'Female',
-            'temp' => 38.8,    // ✅
-            'bp' => '85/55',   // ✅
+            'temp' => 38.8,
+            'bp' => '85/55',
             'vitals' => 'BP: 85/55, HR: 110, SpO2: 90%',
             'condition' => 'Sepsis suspected',
             'time_in' => time() - 600,
         ],
     ];
 
-    // Mock beds
+    // Mock beds (across multiple wards)
     $beds = [];
     $wards = ['Ward 3A', 'Ward 3B', 'ICU', 'Maternity'];
-    foreach ($wards as $ward) {
+    foreach ($wards as $w) {
         for ($i = 1; $i <= 10; $i++) {
             $occupied = rand(0, 1);
             $critical = $occupied && rand(0, 3) === 1;
 
             $beds[] = [
-                'ward' => $ward,
+                'ward' => $w,
                 'number' => $i,
                 'occupied' => $occupied,
                 'patient_name' => $occupied ? 'Patient ' . rand(100, 999) : null,
@@ -412,13 +407,32 @@ public function actionNurse()
         }
     }
 
-    // ✅ Set sidebar
+    // ✅ Mock stats for dashboard cards
+    $pendingMeds = 12;
+    $upcomingAppointments = 5;
+
+    // ✅ Mock Chats & Notifications
+    $newChats = 3;
+    $newNotifications = 2;
+
+    // ✅ Pass sidebar params (badges)
     $this->view->params['sidebar'] = '_nurse-sidebar';
     $this->view->params['criticalAlerts'] = count($criticalPatients);
     $this->view->params['pendingTasks'] = 5;
 
-    return $this->render('nurse', compact('nurse', 'ward','criticalPatients', 'beds'));
+    // ✅ Render with all needed variables
+    return $this->render('nurse', [
+        'nurse' => $nurse,
+        'ward' => $ward,
+        'beds' => $beds,
+        'criticalPatients' => $criticalPatients,
+        'pendingMeds' => $pendingMeds,
+        'upcomingAppointments' => $upcomingAppointments,
+        'newChats' => $newChats,
+        'newNotifications' => $newNotifications,
+    ]);
 }
+
 
     // Pharmacy Dashboard
 public function actionPharmacy()
@@ -449,53 +463,100 @@ public function actionReception()
 {
     $today = date('Y-m-d');
 
-    // ✅ New registrations today
-    $newRegistrations = Patient::find()
-        ->where(['DATE(created_at)' => $today])
+    // ✅ New registrations today — created_at is DATETIME (e.g., '2025-04-05 10:30:00')
+    $patients = Patient::find()
+        ->where(['>=', 'created_at', "$today 00:00:00"])
+        ->andWhere(['<=', 'created_at', "$today 23:59:59"])
         ->count();
 
-    // ✅ Patients who checked in today
-    $checkIns = Patient::find()
-        ->where(['>=', 'check_in', "$today 00:00:00"])
-        ->andWhere(['<=', 'check_in', "$today 23:59:59"])
-        ->count();
+// ✅ Check-Ins = Patients in queue today
+$checkIns = (new \yii\db\Query())
+    ->from('patient_queue')
+    ->innerJoin('patient', 'patient.id = patient_queue.patient_id')
+    ->where(['>=', 'patient_queue.check_in_time', "$today 00:00:00"])
+    ->andWhere(['<=', 'patient_queue.check_in_time', "$today 23:59:59"])
+    ->count();
 
-    // ✅ Cash patients
-    $cashPatients = Patient::find()
-        ->where(['payment_type' => 'Cash'])
-        ->andWhere(['>=', 'check_in', "$today 00:00:00"])
-        ->count();
+// ✅ Cash patients in queue today
+$cashPatients = (new \yii\db\Query())
+    ->from('patient_queue')
+    ->innerJoin('patient', 'patient.id = patient_queue.patient_id')
+    ->where(['patient.payer_type' => 'private_cash'])
+    ->andWhere(['>=', 'patient_queue.check_in_time', "$today 00:00:00"])
+    ->andWhere(['<=', 'patient_queue.check_in_time', "$today 23:59:59"])
+    ->count();
 
-    // ✅ Insurance patients
-    $insurancePatients = Patient::find()
-        ->where(['payment_type' => 'Insurance'])
-        ->andWhere(['>=', 'check_in', "$today 00:00:00"])
-        ->count();
+// ✅ Insurance patients in queue today
+$insurancePatients = (new \yii\db\Query())
+    ->from('patient_queue')
+    ->innerJoin('patient', 'patient.id = patient_queue.patient_id')
+    ->where(['patient.payer_type' => ['nhif', 'insurance']])
+    ->andWhere(['>=', 'patient_queue.check_in_time', "$today 00:00:00"])
+    ->andWhere(['<=', 'patient_queue.check_in_time', "$today 23:59:59"])
+    ->count();
+    // ✅ Fetch doctors
+    $doctors = Doctor::find()
+        ->select(['id', 'first_name', 'last_name'])
+        ->asArray()
+        ->all();
 
-    // ✅ Waiting count (e.g., status = 'Waiting' or not yet assigned)
-    $waitingCount = Patient::find()
-        ->where(['status' => 'Waiting']) // kama una status column
-        ->orWhere(['check_in' => null]) // au bado hawajacheck-in
-        ->count();
+    // ✅ Get queue — all patients in patient_queue
+    $queue = (new \yii\db\Query())
+        ->select([
+            'pq.id',
+            'pq.check_in_time',
+            'pq.status',
+            'pq.doctor_id',
+            'p.registration_number',
+            'p.first_name',
+            'p.last_name',
+            'p.payer_type',
+        ])
+        ->from(['pq' => 'patient_queue'])
+        ->innerJoin(['p' => 'patient'], 'p.id = pq.patient_id')
+        ->orderBy(['pq.check_in_time' => SORT_ASC])
+        ->all();
 
-    // ✅ Mock queue
-    $queue = [
-        (object)['id' => 1,'hosp_id' => 'H-001', 'name' => 'Li Wei', 'status' => 'Checked-In', 'payment_type' => 'Insurance','check_in' => time() - 600, 'priority' => 'normal', 'time_arrived' => time() - 600],
-        (object)['id' => 2,'hosp_id' => 'H-002','name' => 'Zhang Mei', 'status' => 'Waiting','payment_type' => 'Cash', 'check_in' => time() - 300,'priority' => 'urgent','time_arrived' => time() - 300],
-    ];
+    // ✅ Restructure queue — include doctor_name if assigned
+    $structuredQueue = [];
+    foreach ($queue as $item) {
+        // Build doctor name
+        $doctorName = '-';
+        if (!empty($item['doctor_id'])) {
+            $assignedDoc = array_filter($doctors, fn($d) => $d['id'] == $item['doctor_id']);
+            if (!empty($assignedDoc)) {
+                $doc = array_values($assignedDoc)[0];
+                $doctorName = 'Dr. ' . trim($doc['first_name'] . ' ' . $doc['last_name']);
+            } else {
+                $doctorName = 'Dr. Assigned';
+            }
+        }
+
+        $structuredQueue[] = [
+            'id' => $item['id'],
+            'check_in_time' => $item['check_in_time'],
+            'status' => $item['status'],
+            'doctor_name' => $doctorName,
+            'patient' => [
+                'registration_number' => $item['registration_number'],
+                'full_name' => trim($item['first_name'] . ' ' . $item['last_name']),
+                'payer_type' => $item['payer_type'],
+            ]
+        ];
+    }
 
     // ✅ Set sidebar
     $this->view->params['sidebar'] = '_reception-sidebar';
-    $this->view->params['pendingCheckIns'] = 2;
 
+    // ✅ Pass all data to view
     return $this->render('reception', compact(
-        'newRegistrations',
+        'patients',
+        'today',
         'checkIns',
         'cashPatients',
         'insurancePatients',
-        'waitingCount',
-        'queue',
-        'today'
+        'structuredQueue',
+        'doctors'
     ));
 }
 }
